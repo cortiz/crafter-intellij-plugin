@@ -18,9 +18,10 @@
 package org.craftercms.modules.site;
 
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
-import com.intellij.ide.util.projectWizard.ProjectWizardStepFactoryImpl;
+import com.intellij.ide.util.projectWizard.SdkSettingsStep;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.projectRoots.JavaSdk;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.projectImport.ProjectImportProvider;
 import org.craftercms.modules.site.ui.CrafterSiteLibSelectionWizardStep;
@@ -51,9 +52,8 @@ public class CrafterProjectImportProvider extends ProjectImportProvider
 
 	@Override
 	public ModuleWizardStep[] createSteps(final WizardContext context) {
-			return new ModuleWizardStep[]{new CrafterSiteLibSelectionWizardStep((CrafterSiteImportBuilder) myBuilder),
-				new ProjectWizardStepFactoryImpl().createProjectJdkStep(context)};
+			return new ModuleWizardStep[]{
+					new CrafterSiteLibSelectionWizardStep((CrafterSiteImportBuilder) myBuilder,context)};
 	}
-
 
 }

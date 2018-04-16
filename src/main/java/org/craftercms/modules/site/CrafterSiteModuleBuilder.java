@@ -28,8 +28,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.libraries.Library;
-import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jdom.Document;
 import org.jdom.JDOMException;
@@ -39,8 +37,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.model.java.JavaSourceRootType;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 public class CrafterSiteModuleBuilder<T>  extends ModuleBuilder implements ModuleBuilderListener {
 
@@ -75,7 +71,6 @@ public class CrafterSiteModuleBuilder<T>  extends ModuleBuilder implements Modul
 		}
 	}
 
-
 	private void doGenerate(final Module module) {
 		ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(module);
 		VirtualFile[] contentRoots = moduleRootManager.getContentRoots();
@@ -92,9 +87,9 @@ public class CrafterSiteModuleBuilder<T>  extends ModuleBuilder implements Modul
 			markFolderAsSource(dir, modifiableModel, "scripts/classes");
 			markFolderAsSource(dir, modifiableModel, "scripts/filters");
 			markFolderAsSource(dir, modifiableModel, "scripts/controllers");
-			commitModel(module, modifiableModel);
 
 		}
+		commitModel(module, modifiableModel);
 	}
 
 	protected  void markFolderAsSource(final VirtualFile parent, final ModifiableRootModel modifiableModel, final String sourceFolderToMark){

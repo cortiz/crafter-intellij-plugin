@@ -20,6 +20,9 @@
     <name>Crafter CMS IntelliJ support</name>
     <vendor email="carlos.ortiz@craftercms.org" url="http://craftercms.org">Crafter CMS</vendor>
 
+    <depends>com.intellij.modules.lang</depends>
+    <depends>org.intellij.groovy</depends>
+
     <description><![CDATA[
      Crafter CMS plataform support for Intelij.
     ]]></description>
@@ -29,13 +32,13 @@
     <!-- uncomment to enable plugin in all products
     <depends>com.intellij.modules.lang</depends>
     -->
-
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
         <moduleType id="CRAFTER_SITE" order="last"
                     implementationClass="org.craftercms.modules.site.CrafterSiteModuleType"/>
         <moduleBuilder builderClass="org.craftercms.modules.site.CrafterSiteModuleBuilder" />
-        <projectStructureDetector implementation="org.craftercms.modules.site.CrafterSiteStructureDetector"/>
+        <projectImportBuilder implementation="org.craftercms.modules.site.CrafterSiteImportBuilder"/>
+        <projectImportProvider implementation="org.craftercms.modules.site.CrafterProjectImportProvider"/>
 
     </extensions>
 

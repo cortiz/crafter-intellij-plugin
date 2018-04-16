@@ -23,8 +23,13 @@ import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
+import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.roots.libraries.Library;
+import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
@@ -39,6 +44,12 @@ public class CrafterSiteImportBuilder extends ProjectImportBuilder {
 
 	private Library selectedCrafterLibrary;
 
+	private CrafterSiteModuleBuilder crafterSiteModuleBuilder;
+
+
+	public CrafterSiteImportBuilder() {
+		crafterSiteModuleBuilder = new CrafterSiteModuleBuilder();
+	}
 
 	@NotNull
 	@Override
@@ -71,9 +82,6 @@ public class CrafterSiteImportBuilder extends ProjectImportBuilder {
 
 	}
 
-
-
-
 	@Nullable
 	@Override
 	public List<Module> commit(final Project project,
@@ -81,25 +89,27 @@ public class CrafterSiteImportBuilder extends ProjectImportBuilder {
 							   final ModulesProvider modulesProvider,
 							   final ModifiableArtifactModel artifactModel) {
 
-		for (ModuleBuilder moduleBuilder : ModuleBuilder.getAllBuilders()) {
-			if (moduleBuilder instanceof CrafterSiteModuleBuilder){
-				final List<Module> modules = moduleBuilder.commit(project, model, modulesProvider);
-				for (Module module : modules) {
-					ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(module);
-					moduleRootManager.getModifiableModel().addLibraryEntry(selectedCrafterLibrary);
-					ApplicationManager.getApplication().runWriteAction(() -> {
-						moduleRootManager.getModifiableModel().commit();
-						module.getProject().save();
-					});
-				}
-				return modules;
-			}
+		final List<Module> modules = crafterSiteModuleBuilder.commit(project, model, modulesProvider);
+		for (Module module : modules) {
+			ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(module);
+			final ModifiableRootModel modifiableModel = moduleRootManager.getModifiableModel();
+			ApplicationManager.getApplication().runWriteAction(() -> {
+				modifiableModel.addLibraryEntry(selectedCrafterLibrary);
+				modifiableModel.setSdk(ProjectRootManager.getInstance(project).getProjectSdk());
+				modifiableModel.commit();
+				module.getProject().save();
+			});
 		}
-
-		return null;
+		return modules;
 	}
 
 	public void setCrafterLibrary(final Library library) {
 		 selectedCrafterLibrary = library;
 	}
+
+	public CrafterSiteModuleBuilder getCrafterSiteModuleBuilder() {
+		return crafterSiteModuleBuilder;
+	}
+
+
 }

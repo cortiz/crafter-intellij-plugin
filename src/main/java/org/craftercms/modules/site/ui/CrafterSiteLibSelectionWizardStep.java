@@ -18,8 +18,8 @@
 package org.craftercms.modules.site.ui;
 
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
-import com.intellij.projectImport.ProjectImportBuilder;
-import org.craftercms.modules.site.CrafterProjectImportProvider;
+import com.intellij.ide.util.projectWizard.WizardContext;
+import com.intellij.openapi.options.ConfigurationException;
 import org.craftercms.modules.site.CrafterSiteImportBuilder;
 
 import javax.swing.*;
@@ -29,8 +29,8 @@ public class CrafterSiteLibSelectionWizardStep extends ModuleWizardStep {
 	private final CrafterSitePanel crafterPanel;
 	private final CrafterSiteImportBuilder builder;
 
-	public CrafterSiteLibSelectionWizardStep(CrafterSiteImportBuilder builder) {
-		crafterPanel = new CrafterSitePanel();
+	public CrafterSiteLibSelectionWizardStep(CrafterSiteImportBuilder builder, final WizardContext context) {
+		crafterPanel = new CrafterSitePanel(builder, context);
 		this.builder = builder;
 	}
 
@@ -41,7 +41,12 @@ public class CrafterSiteLibSelectionWizardStep extends ModuleWizardStep {
 
 	@Override
 	public void updateDataModel() {
-		 builder.setCrafterLibrary(crafterPanel.selectedLib());
+		try {
+			crafterPanel.updateDataModel();
+		} catch (ConfigurationException e) {
+			e.printStackTrace();
+		}
+		builder.setCrafterLibrary(crafterPanel.selectedLib());
 	}
 
 

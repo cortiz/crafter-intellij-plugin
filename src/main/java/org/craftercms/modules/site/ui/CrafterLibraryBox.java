@@ -78,38 +78,37 @@ public class CrafterLibraryBox extends ComboboxWithBrowseButton {
 		descriptor.setTitle("Choose a Crafter SDK folder");
 		PathChooserDialog pathChooser = FileChooserFactory.getInstance()
 				.createPathChooser(descriptor, null, this);
-		pathChooser.choose(VfsUtil.getUserHomeDir(), new FileChooser.FileChooserConsumer() {
+
+			pathChooser.choose(VfsUtil.getUserHomeDir(), new FileChooser.FileChooserConsumer() {
 
 
-			@Override
-			public void consume(final List<VirtualFile> virtualFiles) {
-				final VirtualFile crafterSKDHome = virtualFiles.get(0);
-				final VirtualFile sdkConfig = crafterSKDHome.findFileByRelativePath("crafterSDK.json");
-				if (sdkConfig== null  || !sdkConfig.exists() || sdkConfig.isDirectory()){
-						showErrorMsg();
-				}else {
-					try {
-						HashMap<String , Object> options = new Gson().fromJson(new FileReader(sdkConfig.getPath()),
-								HashMap.class);
-						Library crafterLib = libTable.createLibrary("Crafter CMS " +
-								options.get("version") + "" +" SDK");
-						for (VirtualFile virtualFile : crafterSKDHome.getChildren()) {
-							if (virtualFile.getName().endsWith(".jar")){
-								crafterLib.getModifiableModel().addRoot(virtualFile, OrderRootType.CLASSES);
-							}
+				@Override
+				public void consume(final List<VirtualFile> virtualFiles) {
+					ApplicationManager.getApplication().runWriteAction(() -> {
+					final VirtualFile crafterSKDHome = virtualFiles.get(0);
+					final VirtualFile sdkConfig = crafterSKDHome.findFileByRelativePath("crafterSDK.json");
+					if (sdkConfig== null  || !sdkConfig.exists() || sdkConfig.isDirectory()){
+							showErrorMsg();
+					}else {
+						try {
+							HashMap<String , Object> options = new Gson().fromJson(new FileReader(sdkConfig.getPath()),
+									HashMap.class);
+							Library crafterLib = libTable.createLibrary("Crafter CMS " +
+									options.get("version") + "" +" SDK");
+							final Library.ModifiableModel crafterLibMod = crafterLib.getModifiableModel();
+							crafterLibMod.addJarDirectory(crafterSKDHome, false);
+							crafterLibMod.commit();
+
+						} catch (FileNotFoundException  e) {
+							showErrorMsg();
 						}
-						ApplicationManager.getApplication().runWriteAction(() -> {
-							crafterLib.getModifiableModel().commit();
-						});
-
-					} catch (FileNotFoundException  e) {
-						showErrorMsg();
 					}
+					});
 				}
-			}
-			@Override
-			public void cancelled() {
-			}
+				@Override
+				public void cancelled() {
+				}
+
 		});
 		loadLibraries();
 	}
