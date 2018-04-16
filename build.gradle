@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2018  Crafter Software Corporation. All rights reserved.
+ * Copyright (C) 2007-2018 Carlos Ortiz. All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,13 +38,9 @@ dependencies {
 intellij {
     version "2017.1"
     plugins = ['Groovy']
+    updateSinceUntilBuild false
 
 }
 patchPluginXml {
-    changeNotes """
-      <p>0.1.0</p>
-    <ul>
-      <li>Added CrafterCMS web project type.</li>
-     </ul>"""
-
+    sinceBuild "171.1"
 }

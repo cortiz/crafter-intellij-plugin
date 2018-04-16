@@ -23,8 +23,17 @@
     <depends>com.intellij.modules.lang</depends>
     <depends>org.intellij.groovy</depends>
 
+    <idea-version since-build="171"/>
     <description><![CDATA[
      Crafter CMS plataform support for Intelij.
+
+        <p>0.1.0</p>
+        <h2>New Features</h2>
+        <ul>
+            <li><a href="https://github.com/cortiz/crafter-intellij-plugin/wiki/Import-Crafter-CMS-Site">Imports a Crafter CMS Site.</a></li>
+            <li>Groovy scripts supports Code completion.</li>
+        </ul>
+
     ]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
